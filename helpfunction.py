@@ -1,7 +1,12 @@
 import numpy as np
 import pandas as pd
-        
-        
+import matplotlib.pyplot as plt
+
+gr = 1.618      
+outdir= './output/helper/'   
+nrPMT = 32
+rangePMT = range(nrPMT)
+  
 # Function returns true if the point is within the volume specified by arr.
 def CheckBorderTPC(x,y,z,array= [[0,0],[0,0],[0,0]]):
     detectorx   =256.35     # In cm
@@ -79,7 +84,7 @@ def hist_bin_uncertainty(data, weights, bin_edges):
 
 
 # This cell is a single event viewer!
-def SingleEventViewer(sample,run,subrun,event):
+def SingleEventViewer(sample,run,subrun,event, sample_dict, save_plot=False):
     str_pause = '------------------------------'
     event_keys = [b'nFlashes', b'hasBeamFlash', b'nSlices', b'nSlicesAfterPrecuts', b'foundATargetSlice', 
                   b'nuCCNC', b'nuEnergy', b'leptonEnergy', b'nuInteractionTime', b'nuPdgCode', b'nuVertexX', b'nuVertexY', b'nuVertexZ']
@@ -90,7 +95,7 @@ def SingleEventViewer(sample,run,subrun,event):
                   b'isTaggedAsTarget', b'isConsideredByFlashId', b'topologicalScore', b'hasBestTopologicalScore', 
                   b'purity', b'completeness']
     # Event Info:
-    event_dict = file_dict[sample]['events']
+    event_dict = sample_dict['events']
     events_index = np.where( (event_dict[b'run']==run) & (event_dict[b'subRun']==subrun) & (event_dict[b'event']==event))
     if len(events_index[0])!=1:
         print('The combination of event, subrun and run was not found in sample',sample,'.')
@@ -102,14 +107,14 @@ def SingleEventViewer(sample,run,subrun,event):
         print(key.decode('UTF-8'), ':\t', event_dict[key][events_index])
         
     # Flash Info:
-    flash_dict = file_dict[sample]['flashes']
+    flash_dict = sample_dict['flashes']
     flashes_indices = np.where( (flash_dict[b'run']==run) & (flash_dict[b'subRun']==subrun) & (flash_dict[b'event']==event))[0]
     print('\n--- FLASH INFO ---')
     for key in flash_keys:
         print(key.decode('UTF-8'), ':\t', flash_dict[key][flashes_indices])
     
     # Slice Info:
-    slice_dict = file_dict[sample]['slices']
+    slice_dict = sample_dict['slices']
     slices_indices = np.where( (slice_dict[b'run']==run) & (slice_dict[b'subRun']==subrun) & (slice_dict[b'event']==event))[0]
     print('\n--- SLICE INFO ---')
     for key in slice_keys:
@@ -171,5 +176,5 @@ def SingleEventViewer(sample,run,subrun,event):
     fig.tight_layout()
     if 1:
         tag = "run"+str(run)+"_subrun"+str(subrun)+"_event"+str(event)
-        fig.savefig("event_viewer_"+tag+".pdf", bbox_inches="tight")
-        print("Image saved: "+"event_viewer_"+tag+".pdf" )
+        fig.savefig(outdir+"event_viewer_"+tag+".pdf", bbox_inches="tight")
+        print("Image saved: "+outdir+"event_viewer_"+tag+".pdf" )
