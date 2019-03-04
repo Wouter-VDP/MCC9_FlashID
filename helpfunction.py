@@ -6,23 +6,18 @@ gr = 1.618
 outdir= './output/helper/'   
 nrPMT = 32
 rangePMT = range(nrPMT)
-  
-# Function returns true if the point is within the volume specified by arr.
-def CheckBorderTPC(x,y,z,array= [[0,0],[0,0],[0,0]]):
-    detectorx   =256.35     # In cm
-    detectory   =116.5      # Symmetric around 0     
-    detectorz   =1036.8
-    if (0+array[0][0]) < x < (detectorx-array[0][1]):
-            if (-detectory+array[1][0])< y < (detectory-array[1][1]):
-                    if (0+array[2][0]) < z < (detectorz-array[2][1]):
-                        return True
-    return False
+ 
+lower = [-1.55, -115.53, 0.1]
+upper = [254.8, 117.47, 1036.9]
 
-
-# Return true if the point is in the TPC with a tolerance.
-def CheckBorderFixed(x,y,z,tolerance=0):
-    arr = [[tolerance,tolerance],[tolerance,tolerance],[tolerance,tolerance]]
-    return CheckBorderTPC(x,y,z,arr)
+# Return true if the point is in the TPC with a tolerance.    
+def inTPC_df(df, str_x, str_y, str_z, fidvol=[0]*6):
+    global upper, lower
+    mask_x = df[str_x].between(lower[0]+fidvol[0], upper[0]-fidvol[1])
+    mask_y = df[str_y].between(lower[1]+fidvol[2], upper[1]-fidvol[3])
+    mask_z = df[str_z].between(lower[2]+fidvol[4], upper[2]-fidvol[5])
+    mask = mask_x & mask_y & mask_z
+    return mask
 
 
 # Formatting
