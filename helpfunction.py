@@ -123,7 +123,7 @@ def SingleEventViewer(run,subrun,event, sample_dict, save_plot=False):
         print('\nUnable to plot: There was no beamflash in the selected event!')
         return
     # Make the plot!
-    fig, ax = plt.subplots(figsize=(5.5*gr,5.5))
+    fig, ax = plt.subplots(figsize=(5.5*gr,6.5))
     ax.set_xlabel('PMT identification number')
     ax.set_ylabel('Number of Photo-electrons per PMT')
     ax.grid(alpha=.3)
@@ -138,21 +138,23 @@ def SingleEventViewer(run,subrun,event, sample_dict, save_plot=False):
     ax.fill_between(rangePMT, beam_flash_pe, alpha=.5,label=lab_flash)
     
     
-    slice_hypo_index = slices_indices[slice_dict.array('passesPreCuts')[slices_indices]]
+    #slice_hypo_index = slices_indices[slice_dict.array('passesPreCuts')[slices_indices]]
+    slice_hypo_index = slices_indices[slice_dict.array('isConsideredByFlashId')[slices_indices]]
     flash_hypo_pe = slice_dict.array('peHypothesisSpectrum')[slice_hypo_index]
     for i,(idx, spectrum) in enumerate(zip(slice_hypo_index, flash_hypo_pe)):
         slice_lab = 'Slice Hypothesis '+str(i)+"\n  "
         slice_lab+=r"Purity: "+ str(round(slice_dict.array('purity')[idx],1)) + "\n  "
         slice_lab+=r"Completeness: "+ str(round(slice_dict.array('completeness')[idx],3)) + "\n  "
         slice_lab+=r"Topo score: "+ str(round(slice_dict.array('topologicalScore')[idx],3)) + "\n  "
-        slice_lab+=r"Flash score: {0:.2e}".format(slice_dict.array('flashMatchScore')[idx])
+        slice_lab+=r"Flash $\chi^2$: {0:.0f}".format(slice_dict.array('flashMatchScore')[idx])
         slice_lab+="\n  "+r"$\Delta$z: "+ str(round(slice_dict.array('deltaZ')[idx],1)) + "cm\n"
-        ax.errorbar(rangePMT,spectrum, yerr= np.sqrt(spectrum), label=slice_lab) 
+        if(len(spectrum)==nrPMT):
+            ax.errorbar(rangePMT,spectrum, yerr= np.sqrt(spectrum), label=slice_lab) 
 
-    ax.legend(bbox_to_anchor=(1.02,0.2,.25,.8),loc=2)
+    ax.legend(bbox_to_anchor=(1.02,0.3,.25,.8),loc=2)
     
     ax.set_title('Run '+str(run)+', Subrun '+str(subrun)+', Event '+str(event), loc='left')
-    if ('nuPdgCode' in event_dict.keys()):
+    if (b'nuPdgCode' in event_dict.keys()):
         d_pdg = {12: r"$\nu_e$", 14: r"$\nu_\mu$",-12: r"$\bar{\nu_e}$", -14: r"$\bar{\nu_\mu}$"}
         print(str_pause,"\nProducing plot for MC event!")
         ax.set_title("MicroBooNE Simulation", loc='right')
