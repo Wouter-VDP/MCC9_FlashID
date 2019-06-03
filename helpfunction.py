@@ -84,9 +84,9 @@ def SingleEventViewer(run,subrun,event, sample_dict, save_plot=False):
     event_keys = ['nFlashes', 'hasBeamFlash', 'nSlices', 'nSlicesAfterPrecuts', 'foundATargetSlice', 
                   'nuCCNC', 'nuEnergy', 'leptonEnergy', 'nuInteractionTime', 'nuPdgCode', 'nuVertexX', 'nuVertexY', 'nuVertexZ']
     flash_keys = ['time', 'centerY', 'centerZ', 'widthY', 'widthZ', 'totalPE', 'inBeamWindow', 'isBeamFlash']
-    slice_keys = ['hasDeposition', 'totalCharge', 'centerX', 'centerY', 'centerZ', 'minX', 'nHits',
+    slice_keys = ['hasDeposition', 'totalCharge', 'centerX', 'centerY', 'centerZ', 'nHits',
                   'deltaY', 'deltaZ', 'deltaYSigma', 'deltaZSigma', 'chargeToLightRatio', 
-                  'passesPreCuts', 'flashMatchScore', 'flashMatchX', 'totalPEHypothesis', 
+                  'passesPreCuts', 'flashMatchScore', 'totalPEHypothesis', 
                   'isTaggedAsTarget', 'isConsideredByFlashId', 'topologicalScore', 'hasBestTopologicalScore', 
                   'purity', 'completeness']
     # Event Info:
